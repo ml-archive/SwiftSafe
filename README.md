@@ -1,5 +1,5 @@
-# Safe
-Thread synchronization access made easy.
+# SwiftSafe
+Thread synchronization made easy.
 
 :question: Why?
 ----
@@ -9,6 +9,10 @@ Performance-sensitive classes need internal state synchronization, so that exter
 ---------------------------
 - EREW - **Exclusive Read, Exclusive Write**: The most common synchronization method, where only one thread can read or write your protected resource at one time. One big disadvantage is that it's prone to deadlocks.
 - CREW - **Concurrent Read, Exclusive Write**: Less common, but IMO more powerful method, where multiple threads can read, but only one thread can write at one time. Reading and writing is automatically made exclusive, i.e. all reads enqueued before a write are executed first, then the single write is executed, then more reads can be executed (those enqueued after the write).
+
+:octocat: Installation
+----
+Get `SwiftSafe` on CocoaPods, just add `pod 'SwiftSafe'` to your Podfile.
 
 :mortar_board: Usage
 -----
@@ -35,11 +39,11 @@ class MyCache {
 
 This is the first implementation. It works, but when you start calling it from multiple threads at the same time, you'll encounter inconsistencies and race conditions - meaning you'll be getting different results with the same sequence of actions. In more complicated cases, you might even cause a runtime crash.
 
-The way you fix it is obviously by protecting the internal `storage` (note: `NSDictionary` is not thread-safe). Again, to be most efficient, we want to allow any number of threads reading from the cache, but only one to update it (and ensure that nobody is reading from it at that time). You can achieve these guarantees with GCD, which is what `Safe` does. What this API brings to the table, however, is the simple and obvious naming.
+The way you fix it is obviously by protecting the internal `storage` (note: `NSDictionary` is not thread-safe). Again, to be most efficient, we want to allow any number of threads reading from the cache, but only one to update it (and ensure that nobody is reading from it at that time). You can achieve these guarantees with GCD, which is what `SwiftSafe` does. What this API brings to the table, however, is the simple and obvious naming.
 
 Let's see how we can make our cache thread-safe in a couple lines of code.
 ```swift
-import Safe
+import SwiftSafe
 
 class MyCache {
 	private let storage: NSMutableDictionary = NSMutableDictionary()
