@@ -31,12 +31,14 @@ class SafeTests: XCTestCase {
         }
         
         let write1 = {
+            slp(0.001)
             acc.append(5)
             slp(0.1)
             acc.append(6)
         }
         
         let read3 = {
+            slp(0.002)
             acc.append(7)
             slp(0.1)
             acc.append(8)
