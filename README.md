@@ -75,6 +75,10 @@ That's it! Just import the library, create a `Safe` object which follows the con
 -------
 Even though it might sound unnecessary to some, understandable and correct methods of synchronization will save you days of debugging and many headaches. :)
 
+:blue_heart: Code of Conduct
+------------
+Please note that this project is released with a [Contributor Code of Conduct](./CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 :v: License
 -------
 MIT
