@@ -9,8 +9,8 @@
 import XCTest
 @testable import Safe
 
-func slp(ti: NSTimeInterval) {
-    NSThread.sleepForTimeInterval(ti)
+func slp(_ ti: TimeInterval) {
+    Thread.sleep(forTimeInterval: ti)
 }
 
 class SafeTests: XCTestCase {
@@ -44,15 +44,15 @@ class SafeTests: XCTestCase {
             acc.append(8)
         }
         
-        let exp = self.expectationWithDescription("end")
+        let exp = self.expectation(description: "end")
         var safe: Safe! = EREW()
-        let helperQ = dispatch_queue_create("test", DISPATCH_QUEUE_CONCURRENT)
-        dispatch_async(helperQ) { safe.read(read1) }
-        dispatch_async(helperQ) { safe.read(read2) }
-        dispatch_async(helperQ) { safe.write(write1) }
-        dispatch_async(helperQ) { safe.read(read3) }
+        let helperQ = DispatchQueue(label: "test", attributes: DispatchQueue.Attributes.concurrent)
+        helperQ.async { safe.read(read1) }
+        helperQ.async { safe.read(read2) }
+        helperQ.async { safe.write(write1) }
+        helperQ.async { safe.read(read3) }
         
-        dispatch_barrier_async(helperQ) {
+        helperQ.async(flags: .barrier, execute: {
             
             safe.write {
                 slp(0.1)
@@ -61,8 +61,8 @@ class SafeTests: XCTestCase {
                 XCTAssertEqual(expAcc, acc)
                 exp.fulfill()
             }
-        }
-        self.waitForExpectationsWithTimeout(10, handler: nil)
+        }) 
+        self.waitForExpectations(timeout: 10, handler: nil)
     }
     
     func testCREW() {
@@ -95,15 +95,15 @@ class SafeTests: XCTestCase {
             acc.append(8)
         }
         
-        let exp = self.expectationWithDescription("end")
+        let exp = self.expectation(description: "end")
         var safe: Safe! = CREW()
-        let helperQ = dispatch_queue_create("test", DISPATCH_QUEUE_CONCURRENT)
-        dispatch_async(helperQ) { safe.read(read1) }
-        dispatch_async(helperQ) { safe.read(read2) }
-        dispatch_async(helperQ) { safe.write(write1) }
-        dispatch_async(helperQ) { safe.read(read3) }
+        let helperQ = DispatchQueue(label: "test", attributes: DispatchQueue.Attributes.concurrent)
+        helperQ.async { safe.read(read1) }
+        helperQ.async { safe.read(read2) }
+        helperQ.async { safe.write(write1) }
+        helperQ.async { safe.read(read3) }
         
-        dispatch_barrier_async(helperQ) {
+        helperQ.async(flags: .barrier, execute: {
             
             safe.write {
                 slp(0.1)
@@ -126,8 +126,8 @@ class SafeTests: XCTestCase {
                 
                 exp.fulfill()
             }
-        }
-        self.waitForExpectationsWithTimeout(50, handler: nil)
+        }) 
+        self.waitForExpectations(timeout: 50, handler: nil)
     }
 
 }
