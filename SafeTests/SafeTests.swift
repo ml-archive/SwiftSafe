@@ -117,7 +117,8 @@ class SafeTests: XCTestCase {
                 XCTAssertEqual(expReadFirsts, readFirsts)
                 
                 let expReadSeconds: Set<Int> = [2, 4]
-                let readSeconds = Set(acc.prefix(4).suffix(2))
+                let prefixed = acc.prefix(4)
+                let readSeconds = Set(prefixed.suffix(2))
                 XCTAssertEqual(expReadSeconds, readSeconds)
                 
                 let expAccTail = [5, 6, 7, 8]
