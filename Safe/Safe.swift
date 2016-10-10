@@ -19,12 +19,12 @@ public protocol Safe {
     /**
      *  Blocks calling thread until `access` can safely execute.
      */
-    func read(access: SafeAccess)
+    func read(_ access: SafeAccess)
     
     /**
      *  Returns immediately, `access` executes as soon as is safely possible.
      */
-    func write(access: SafeAccess)
+    func write(_ access: @escaping SafeAccess)
 }
 
 let QueueName = "com.honzadvorsky.safe.queue"
@@ -33,20 +33,20 @@ let QueueName = "com.honzadvorsky.safe.queue"
  *  Exclusive read, exclusive write. Only one thread can read
  *  or write at one time.
 */
-public class EREW: Safe {
+open class EREW: Safe {
     
-    let queue: dispatch_queue_t
+    let queue: DispatchQueue
     
-    public init(queue: dispatch_queue_t = dispatch_queue_create(QueueName, DISPATCH_QUEUE_SERIAL)) {
+    public init(queue: DispatchQueue = DispatchQueue(label: QueueName, attributes: [])) {
         self.queue = queue
     }
     
-    public func read(access: SafeAccess) {
-        dispatch_sync(self.queue, access)
+    open func read(_ access: SafeAccess) {
+        self.queue.sync(execute: access)
     }
     
-    public func write(access: SafeAccess) {
-        dispatch_async(self.queue, access)
+    open func write(_ access: @escaping SafeAccess) {
+        self.queue.async(execute: access)
     }
 }
 
@@ -55,19 +55,19 @@ public class EREW: Safe {
  *  multiple threads can read. Write waits for all previously-enqueued
  *  reads to finish, executes, then reads can start again. Barrier-based.
  */
-public class CREW: Safe {
+open class CREW: Safe {
     
-    let queue: dispatch_queue_t
+    let queue: DispatchQueue
     
-    public init(queue: dispatch_queue_t = dispatch_queue_create(QueueName, DISPATCH_QUEUE_CONCURRENT)) {
+    public init(queue: DispatchQueue = DispatchQueue(label: QueueName, attributes: DispatchQueue.Attributes.concurrent)) {
         self.queue = queue
     }
 
-    public func read(access: SafeAccess) {
-        dispatch_sync(self.queue, access)
+    open func read(_ access: SafeAccess) {
+        self.queue.sync(execute: access)
     }
     
-    public func write(access: SafeAccess) {
-        dispatch_barrier_async(self.queue, access)
+    open func write(_ access: @escaping SafeAccess) {
+        self.queue.async(flags: .barrier, execute: access)
     }
 }
