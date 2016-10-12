@@ -2,10 +2,10 @@
 Pod::Spec.new do |s|
 
   s.name         = "SwiftSafe"
-  s.version      = "0.1"
+  s.version      = "2.0.0"
   s.summary      = "Thread synchronization made easy."
 
-  s.homepage     = "https://github.com/czechboy0/SwiftSafe"
+  s.homepage     = "https://github.com/nodes-ios/SwiftSafe"
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
   s.author             = { "Honza Dvorsky" => "https://honzadvorsky.com" }
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = "2.0"
   s.tvos.deployment_target = "9.0"
 
-  s.source       = { :git => "https://github.com/czechboy0/SwiftSafe.git", :tag => "v#{s.version}" }
+  s.source       = { :git => "https://github.com/nodes-ios/SwiftSafe.git", :tag => "#{s.version}" }
 
   s.source_files  = "Safe/*.swift"
 
